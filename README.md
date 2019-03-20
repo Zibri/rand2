@@ -5,6 +5,9 @@ This is just another quick & dirty code to generate a random stream of data fast
 It's useful for testing video compressors or effects.
 But can be useful for anything.
 
+rand2 passes all NIST tests for randomness
+https://gerhardt.ch/downloads/randtests_python.tgz
+
 P.S.
 The source can be optimized even more and gain far better speeds.
 You are free to contribute.
