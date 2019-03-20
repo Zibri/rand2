@@ -18,6 +18,10 @@ on my pc the bandwidth is about 1.95 GB/sec :D
 #include <unistd.h>
 
 int main() {
+
+	fork();
+	fork();
+	
 	unsigned long long varr[8];
 
 	unsigned long long var=0,p=0,v=0;
