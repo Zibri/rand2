@@ -8,13 +8,16 @@ But can be useful for anything.
 rand2 passes all NIST tests for randomness
 https://gerhardt.ch/downloads/randtests_python.tgz
 
-White noise audio:
+White noise audio
+
 ./rand2|ffplay -f s16le -ar 48000 -ac 2 -
 
-White noise video (full HD color 60fps):
+White noise video (full HD color 60fps)
+
 ./rand2 | ffplay -fs -f rawvideo -pixel_format rgb24 -video_size 1920x1080 -framerate 60 -
 
-White noise audio+video:
+White noise audio+video
+
 ./rand2 | ffmpeg -f rawvideo -pixel_format rgb24 -video_size 1920x1080 -framerate 60 -i - -f s16le -ar 48000 -ac 2 -i - -c:a pcm_s16le -c:v rawvideo -f avi -|ffplay -fs -
 
 P.S.
