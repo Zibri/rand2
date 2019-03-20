@@ -8,6 +8,9 @@ But can be useful for anything.
 rand2 passes all NIST tests for randomness
 https://gerhardt.ch/downloads/randtests_python.tgz
 
+# monobitfrequencytest	blockfrequencytest	runstest	longestrunones10000	binarymatrixranktest	spectraltest	nonoverlappingtemplatematchingtest	overlappingtemplatematchingtest	maurersuniversalstatistictest	linearcomplexitytest	serialtest	aproximateentropytest	cumultativesumstest	randomexcursionstest	randomexcursionsvarianttest	cumultativesumstestreverse
+True	True	True	True	True	True	True	True	True	True	True	True	True	True	True	True
+
 P.S.
 The source can be optimized even more and gain far better speeds.
 You are free to contribute.
