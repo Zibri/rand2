@@ -21,7 +21,10 @@ int main() {
 
 	fork();
 	fork();
-	
+
+	char buf[0x80000];
+	setbuf(stdout, buf);
+
 	unsigned long long varr[8];
 
 	unsigned long long var=0,p=0,v=0;
