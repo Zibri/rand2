@@ -17,68 +17,49 @@ on my pc the bandwidth is about 1.95 GB/sec :D
 #include <fcntl.h>
 #include <unistd.h>
 
-int main() {
+#define BUFF1 16
 
-	fork();
-	fork();
+int main()
+{
 
-	char buf[0x80000];
-	setbuf(stdout, buf);
+  fork();
+  fork();
 
-	unsigned long long varr[8];
+  char buf[0x80000];
+  setbuf(stdout, buf);
 
-	unsigned long long var=0,p=0,v=0;
+  long long unsigned int varr[BUFF1 + 2];
 
-	// random seed is 128 bit wide and stored in "var" and "p"
+  // random seed is 128 bit wide 
 
-	int fd = open("/dev/random", O_RDWR);
-	v=read(fd, &var, 8);
-	v=read(fd, &p, 8);
-	close(fd);
+  /*  This gets the random seed from /dev/urandom
 
-	while(1) {   // Generation is way faster by repeating the code 8 times than with a for loop.
+     int fd = open("/dev/urandom", O_RDWR);
+     v=read(fd, &varr[BUFF1], 8);
+     v=read(fd, &varr[BUFF1+1], 8);
+     close(fd);
 
-		var = (var >> 32) ^ var ;
-		varr[0]=var;
-		v=p;
-		p=var;
-		var+=v;
-		var = (var >> 32) ^ var ;
-		varr[1]=var;
-		v=p;
-		p=var;
-		var+=v;
-		var = (var >> 32) ^ var ;
-		varr[2]=var;
-		v=p;
-		p=var;
-		var+=v;
-		var = (var >> 32) ^ var ;
-		varr[3]=var;
-		v=p;
-		p=var;
-		var+=v;
-		var = (var >> 32) ^ var ;
-		varr[4]=var;
-		v=p;
-		p=var;
-		var+=v;
-		var = (var >> 32) ^ var ;
-		varr[5]=var;
-		v=p;
-		p=var;
-		var+=v;
-		var = (var >> 32) ^ var ;
-		varr[6]=var;
-		v=p;
-		p=var;
-		var+=v;
-		var = (var >> 32) ^ var ;
-		varr[7]=var;
-		v=p;
-		p=var;
-		var+=v;
+   */
 
-		fwrite(&varr,64,1,stdout);
-	}
+  /* This gets the random seed from the cpu */
+
+  __asm__ __volatile__("rdrand %0\nrdrand %1\n":"=r"(varr[BUFF1]), "=r"(varr[BUFF1 + 1]):);
+
+  unsigned char c;
+
+  while (1) {
+
+    // Generation is way faster by repeating the code 8 times than with a for loop.
+    // compile with -funroll-loops !
+
+    for (int i = 0; i < BUFF1; i++) {
+
+      varr[i] = varr[BUFF1] + varr[BUFF1 + 1];
+      varr[i] |= (varr[i] < varr[BUFF1]);       // without this there will be a visible bit error 
+      varr[BUFF1 + 1] = varr[BUFF1];
+      varr[BUFF1] = varr[i];
+    }
+
+    fwrite(&varr, BUFF1 * sizeof(varr[0]), 1, stdout);
+  }
 }
