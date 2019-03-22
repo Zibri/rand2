@@ -45,7 +45,7 @@ int main()
 
   __asm__ __volatile__("rdrand %0\nrdrand %1\n":"=r"(varr[BUFF1]), "=r"(varr[BUFF1 + 1]):);
 
-  unsigned char c;
+  /* The real seed should be 65 bit wide (64 + carry) */
 
   while (1) {
 
