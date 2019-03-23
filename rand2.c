@@ -35,8 +35,7 @@ int main()
   /*  This gets the random seed from /dev/urandom
 
      int fd = open("/dev/urandom", O_RDWR);
-     v=read(fd, &varr[BUFF1], 8);
-     v=read(fd, &varr[BUFF1+1], 8);
+     v=read(fd, &varr[BUFF1], 16);
      close(fd);
 
    */
@@ -53,9 +52,8 @@ int main()
     // compile with -funroll-loops !
 
     for (int i = 0; i < BUFF1; i++) {
-
       varr[i] = varr[BUFF1] + varr[BUFF1 + 1];
-      varr[i] |= (varr[i] < varr[BUFF1]);       // without this there will be a visible bit error 
+      varr[i] += (varr[i] < varr[BUFF1]);
       varr[BUFF1 + 1] = varr[BUFF1];
       varr[BUFF1] = varr[i];
     }
