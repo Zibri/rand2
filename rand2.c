@@ -17,43 +17,90 @@ on my pc the bandwidth is about 1.95 GB/sec :D
 #include <fcntl.h>
 #include <unistd.h>
 
+#ifndef SLOWRND
+#define SLOWRND 0               // 0 Ultrafast, 1 Fast
+#endif
+
+#if (SLOWRND > 1)
+#error SLOWRND can be 0 or 1
+#endif
+
 #define BUFF1 16
 
-int main()
+#pragma GCC optimize ("unroll-loops")
+
+int main(int argc, char **argv)
 {
+  unsigned int ncores = 0;
 
-  fork();
-  fork();
+  long unsigned int init;
 
-  char buf[0x80000];
+  asm volatile ("cpuid":"=a" (ncores):"a"(0xb), "c"(0x1):);
+
+
+  asm volatile ("rdtsc":"=a" (init):);
+
+  if (ncores > 1)
+    fork();
+  if (ncores > 3)
+    fork();
+
+
+  char buf[0x1000];
   setbuf(stdout, buf);
 
-  long long unsigned int varr[BUFF1 + 2];
+#ifdef __x86_64
+  long long unsigned int varr[BUFF1 + 2 + SLOWRND];
+#else
+  long unsigned int varr[BUFF1 + 2 + SLOWRND];
+#endif
 
-  // random seed is 128 bit wide 
 
-  /*  This gets the random seed from /dev/urandom
+  if (argc > 1) {
+    varr[BUFF1] = strtoull(argv[1], NULL, 16);
+    if (argc > 2)
+      varr[BUFF1 + 1] = strtoull(argv[2], NULL, 16);
+#if (SLOWRND >0)
+    if (argc > 3)
+      varr[BUFF1 + 2] = strtoull(argv[3], NULL, 16);
+#endif
+  }
 
-     int fd = open("/dev/urandom", O_RDWR);
-     v=read(fd, &varr[BUFF1], 16);
-     close(fd);
+  if ((argc == 0) || ((varr[BUFF1] | varr[BUFF1 + 1]) == 0)) {
+    /* This gets the random seed from the cpu */
 
-   */
+    for (int x = 0; x < (2 + SLOWRND); x++) {
+      asm volatile ("rdrand %0\n":"=r" (varr[BUFF1 + x]):);
+    }
 
-  /* This gets the random seed from the cpu */
+  }
 
-  __asm__ __volatile__("rdrand %0\nrdrand %1\n":"=r"(varr[BUFF1]), "=r"(varr[BUFF1 + 1]):);
+/* This routine adds a random initialization */
 
-  /* The real seed should be 64 bit wide */
+  if (argc == 0) {
+    for (int i = 0; i < (init && 31); i++) {
+      varr[0] = varr[BUFF1] + varr[BUFF1 + 1];
+      varr[0] ^= (varr[0] < varr[BUFF1]);
+#if (SLOWRND > 0)
+      varr[0] = varr[0] + varr[BUFF1 + 2];
+      varr[0] ^= (varr[0] < varr[BUFF1 + 2]);
+      varr[BUFF1 + 2] = varr[BUFF1 + 1];
+#endif
+      varr[BUFF1 + 1] = varr[BUFF1];
+      varr[BUFF1] = varr[0];
+    }
+  }
 
   while (1) {
 
-    // Generation is way faster by repeating the code 8 times than with a for loop.
-    // compile with -funroll-loops !
-
     for (int i = 0; i < BUFF1; i++) {
       varr[i] = varr[BUFF1] + varr[BUFF1 + 1];
-      varr[i] += (varr[i] < varr[BUFF1]);
+      varr[i] ^= (varr[i] < varr[BUFF1]);
+#if (SLOWRND > 0)
+      varr[i] = varr[i] + varr[BUFF1 + 2];
+      varr[i] ^= (varr[i] < varr[BUFF1 + 2]);
+      varr[BUFF1 + 2] = varr[BUFF1 + 1];
+#endif
       varr[BUFF1 + 1] = varr[BUFF1];
       varr[BUFF1] = varr[i];
     }
