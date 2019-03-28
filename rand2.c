@@ -11,7 +11,7 @@ Audio + video color white noise
 ./rand2 | ffmpeg -f u16be -ar 48000 -ac 1 -i - -f rawvideo -pixel_format yuv420p -video_size 1920x1080 -framerate 60 -i - -c:a ac3 -vcodec copy -f avi - |ffplay -fs -volume 10 -
 Speed test
 sudo nice -n -20 ./rand2 | pv -ptebaSs 800G >/dev/null
-on my pc the bandwidth is about 6.95 GB/sec :D
+on my pc the bandwidth is about 7,35GiB/s :D
 *****************************************************************************/
 #include <stdio.h>
 #include <stdlib.h>
