@@ -26,7 +26,7 @@ You are free to contribute.
 
 Some comparisons:
 
-    $ sudo nice -n -20 ./rand2 1 1| pv -ptebaSs 800G >/dev/null
+    $ sudo ./rand2 1 1| pv -ptebaSs 800G >/dev/null  # if run with sudo, rand2 will have maximum priority
     800GiB 0:01:40 [8,00GiB/s] [========================================================================>] 100%          
 
     $ ./rand|pv -S -s 2G >/dev/null
