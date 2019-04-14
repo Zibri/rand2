@@ -38,5 +38,5 @@ Some comparisons:
     $ dd if=/dev/zero bs=1k count=2M 2>/dev/null | openssl enc -rc4-40 -pass pass:weak |pv -S -s 2G >/dev/null
     2,00GiB 0:00:04 [ 413MiB/s] [========================================================================>] 100%            
 
-Try it in google cloud shell:
-https://console.cloud.google.com/cloudshell/open?git_repo=https:%2F%2Fgithub.com%2Fzibri%2Frand2&shellonly=true&page=shell
+## Try it in Google Cloud Shell
+[![Open in Cloud Shell](http://gstatic.com/cloudssh/images/open-btn.png)](https://console.cloud.google.com/cloudshell/open?git_repo=https:%2F%2Fgithub.com%2Fzibri%2Frand2&shellonly=true&page=shell)
