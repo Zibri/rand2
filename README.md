@@ -40,3 +40,6 @@ Some comparisons:
 
 ## Try it in Google Cloud Shell
 [![Open in Cloud Shell](http://gstatic.com/cloudssh/images/open-btn.png)](https://console.cloud.google.com/cloudshell/open?git_repo=https:%2F%2Fgithub.com%2Fzibri%2Frand2&shellonly=true&page=shell)
+
+Reference speed on Cloud Shell:
+80GiB 0:00:49 [1.61GiB/s] [========================================================================>] 100%
